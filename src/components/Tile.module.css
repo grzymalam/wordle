@@ -1,0 +1,19 @@
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ccc;
+  color: rgb(29, 157, 255);
+  border-radius: 3px;
+  width: 2rem;
+  height: 2rem;
+  margin: 0.1rem;
+}
+
+.correct {
+  background-color: green;
+}
+
+.common {
+  background-color: rgb(255, 255, 79);
+}

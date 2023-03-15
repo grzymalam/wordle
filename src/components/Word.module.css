@@ -1,0 +1,9 @@
+.word {
+  display: flex;
+  flex-direction: row;
+}
+
+.highlight {
+  background-color: rgb(78, 78, 78);
+  border-radius: 5px;
+}
