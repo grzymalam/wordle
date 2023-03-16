@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Tile from "./Tile";
 import classes from "./Word.module.css";
 
@@ -29,6 +29,7 @@ const getCommonIndexes = (keyword, word) => {
 const Word = (props) => {
   //TODO reveal animation
   const [hasBeenChecked, setHasBeenChecked] = useState(false);
+  const [applyShake, setApplyShake] = useState(false);
 
   const fullWordEnteredHandler = () => {
     const correctIndexes = getCorrectIndexes(
@@ -61,10 +62,22 @@ const Word = (props) => {
       );
     });
   }
+  useEffect(() => {
+    setApplyShake(true);
+    const timer = setTimeout(() => {
+      setApplyShake(false);
+    }, 300);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [hasBeenChecked]);
 
   const highlight = props.highlight ? classes.highlight : '';
+  const shake = applyShake ? classes.shake : '';
 
-  return <div className={`${classes.word} ${highlight}`}>{tiles}</div>;
+
+  return <div className={`${classes.word} ${highlight} ${shake}`}>{tiles}</div>;
 };
 
 export default Word;

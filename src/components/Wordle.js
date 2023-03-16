@@ -9,24 +9,27 @@ const ALLOWED_LETTERS = "abcdefghijklmnopqrstuvwxyz";
 
 const Wordle = () => {
   const [letters, setLetters] = useState([]);
-  const [word, setWord] = useState('');
-  const [currentRow, setCurrentRow] = useState(0);
+  const [checkedRows, setCheckedRows] = useState(0); 
+
+  const previousWordStart = checkedRows * WORD_LENGTH;
+
+  const word = letters.slice(previousWordStart, previousWordStart+WORD_LENGTH).join('');
+  console.log(letters);
+  console.log(word);
 
   const [keyword, keywords, getRandomKeyword] = useKeyword("data/words.txt");
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === "Backspace" && word.length !== 0) {
+      if (event.key === "Backspace" && word.length !== 0 ) {
         setLetters(prevLetters => prevLetters.slice(0, -1));
-        setWord(prevWord => prevWord.slice(0, prevWord.length - 1));
       }
       if (!ALLOWED_LETTERS.includes(event.key)) {
         return;
       }
-      if (word.length < WORD_LENGTH) {
+      if ((letters.length) % WORD_LENGTH > 0 || letters.length===0 || letters.length / checkedRows === WORD_LENGTH) {
         setLetters(prevLetters => [...prevLetters, event.key]);
-        setWord(prevWord => prevWord + event.key);
-      }
+      } 
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -34,19 +37,17 @@ const Wordle = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [word, letters, keywords]);
+  }, [letters, keywords, checkedRows, word.length]);
 
   const checkHandler = () => {
     if(keywords.includes(word) && word.length === WORD_LENGTH){
-      setCurrentRow(prevRow => prevRow + 1);
-      setWord('');
+      setCheckedRows(prev => prev + 1);
     }
   };
 
   const resetHandler = () => {
-    setWord('');
     setLetters([]);
-    setCurrentRow(0);
+    setCheckedRows(0);
     getRandomKeyword();
   };
 
@@ -57,8 +58,8 @@ const Wordle = () => {
         key={val}
         letters={letters.slice(startIndex, startIndex + WORD_LENGTH)}
         keyword={keyword}
-        canBeChecked={val < currentRow}
-        highlight={currentRow === val}
+        canBeChecked={val < checkedRows}
+        highlight={val === checkedRows}
       />
     );
   });
